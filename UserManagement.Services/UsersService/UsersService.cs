@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.Extensions.Logging;
 using UserManagement.Repositories.Entities;
 using UserManagement.Repositories.UsersRepository;
 using UserManagement.Services.MapperExtensions;
@@ -33,6 +36,29 @@ public class UsersService : IUsersService
     {
         UserEntity createdEntity = await _usersRepository.CreateUser(user.ToEntity());
         return createdEntity.ToModel();
+    }
+
+    public async Task<IEnumerable<User>> UploadUsers(string filePath)
+    {
+        CsvConfiguration csvConfig = new(CultureInfo.InvariantCulture)
+        {
+            PrepareHeaderForMatch = args => args.Header.ToLower()
+        };
+
+        using StreamReader reader = new(File.OpenRead(filePath));
+        using CsvReader csvReader = new(reader, csvConfig);
+
+        IEnumerable<User>? usersToCreate = csvReader.GetRecords<User>();
+
+        if (usersToCreate == null)
+        {
+            return Enumerable.Empty<User>();
+        }
+
+        IEnumerable<UserEntity> entitiesToCreate = usersToCreate.Select(user => user.ToEntity());
+        IEnumerable<UserEntity> createdUsers = await _usersRepository.CreateUsers(entitiesToCreate);
+
+        return createdUsers.Select(x => x.ToModel());
     }
 
     public async Task<bool> UpdateUser(int userId, User user)

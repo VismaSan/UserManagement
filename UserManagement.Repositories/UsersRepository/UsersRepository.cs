@@ -35,6 +35,20 @@ public class UsersRepository : IUsersRepository
         return createdUser.Entity;
     }
 
+    public async Task<IEnumerable<UserEntity>> CreateUsers(IEnumerable<UserEntity> users)
+    {
+        List<UserEntity> result = new();
+        foreach (UserEntity userEntity in users)
+        {
+            EntityEntry<UserEntity> createdEntity = await _dbContext.users.AddAsync(userEntity);
+            result.Add(createdEntity.Entity);
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        return result;
+    }
+
     public async Task<bool> UpdateUser(int userId, UserEntity user)
     {
         UserEntity? currentEntity = await _dbContext.users.FirstOrDefaultAsync(entity => entity.id == userId);

@@ -7,8 +7,6 @@ namespace UserManagement.Api.Controllers;
 // TODO: versioning
 // TODO: readme file
 // TODO: exception handling
-// TODO: create users from list in file
-// TODO: edit user
 
 [ApiController]
 [Route("[controller]")]
@@ -41,11 +39,31 @@ public class UsersController : ControllerBase
         return Ok(await _usersService.CreateUser(user));
     }
 
-    // [HttpPost]
-    // public async Task<IActionResult> CreateUsersFromFile()
-    // {
-    //     return Ok();
-    // }
+    [HttpPost("upload")]
+    public async Task<IActionResult> UploadUsers(IFormFile file)
+    {
+        string fileExtension = Path.GetExtension(file.FileName);
+
+        if (fileExtension != ".csv")
+        {
+            return BadRequest();
+        }
+
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        string filePath = Path.Combine(directoryPath, file.FileName);
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        await using (FileStream fileStream = System.IO.File.Create(filePath))
+        {
+            await file.CopyToAsync(fileStream);
+        }
+
+        return Ok(await _usersService.UploadUsers(filePath));
+    }
 
     [HttpPut]
     public async Task<IActionResult> UpdateUser(int userId, User user)

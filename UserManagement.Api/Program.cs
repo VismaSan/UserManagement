@@ -12,7 +12,12 @@ builder.Services.AddTransient<IUsersRepository, UsersRepository>();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? string.Empty;
+string? connectionStringValue = builder.Configuration
+                                       .GetSection("ConnectionStrings")
+                                       .GetSection("DB_CONNECTION_STRING")
+                                       .Value;
+
+string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? connectionStringValue ?? string.Empty;
 builder.Services.AddDbContext<PostgreSqlContext>(options => { options.UseNpgsql(connectionString); });
 
 var app = builder.Build();

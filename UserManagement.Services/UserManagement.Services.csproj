@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\UserManagement.Repositories\UserManagement.Repositories.csproj" />
   </ItemGroup>
 
