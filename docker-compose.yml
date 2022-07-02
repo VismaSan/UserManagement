@@ -11,7 +11,7 @@ services:
       - "postgres_image"
     build:
       context: .
-      dockerfile: Docerfile
+      dockerfile: Dockerfile
     ports:
       - "8080:5000"
     environment:
@@ -22,16 +22,16 @@ services:
   postgres_image:
     image: postgres:latest
     ports:
-      - "5432"
+      - "8081:5432"
     restart: always
     volumes:
       - db_volume:/var/lib/postgresql/data
-      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
+      - ./dbscripts/initial_seed.sql:/docker-entrypoint-initdb.d/initial_seed.sql
     environment:
       POSTGRES_USER: "test"
       POSTGRES_PASSWORD: "test"
       POSTGRES_DB: "users_management_db"
     networks:
       - user-management-api
-volume:
+volumes:
   db_volume:

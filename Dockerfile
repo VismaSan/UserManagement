@@ -27,5 +27,5 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS="http://*:5000"
 ENTRYPOINT ["dotnet", "UserManagement.Api.dll"]
 
-# clear; docker build --no-cache -t user-management-api .
-# docker run --rm -d -p 8080:5000 --name user-management-container user-management-api
+# docker-compose up --build
+# docker-compose down --volumes
