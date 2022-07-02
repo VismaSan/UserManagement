@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using UserManagement.Repositories.DbContext;
 using UserManagement.Repositories.Entities;
@@ -23,37 +24,35 @@ public class UsersRepository : IUsersRepository
 
     public async Task<UserEntity?> GetUser(int userId)
     {
-        return await _dbContext.users.Where(user => user.id == userId).FirstOrDefaultAsync();
+        return await _dbContext.users.FindAsync(userId);
     }
 
-    public Task<UserEntity> CreateUser(UserEntity user)
+    public async Task<UserEntity> CreateUser(UserEntity user)
     {
-        throw new NotImplementedException();
+        EntityEntry<UserEntity> createdUser = await _dbContext.users.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
+
+        return createdUser.Entity;
     }
 
-    public Task<UserEntity> UpdateUser(int userId, UserEntity user)
+    public async Task<bool> UpdateUser(int userId, UserEntity user)
     {
-        throw new NotImplementedException();
-    }
+        UserEntity? currentEntity = await _dbContext.users.FirstOrDefaultAsync(entity => entity.id == userId);
 
-    public Task DeleteUser(int userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    private static IEnumerable<UserEntity> MockedUsers => new List<UserEntity>
-    {
-        new()
+        if (currentEntity == null)
         {
-            id = 1,
-            username = "User0",
-            email = "Email0"
-        },
-        new()
-        {
-            id = 10,
-            username = "User10",
-            email = "Email10"
+            return false;
         }
-    };
+
+        _dbContext.Entry(currentEntity).CurrentValues.SetValues(user);
+        await _dbContext.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task DeleteUser(UserEntity user)
+    {
+        _dbContext.users.Remove(user);
+        await _dbContext.SaveChangesAsync();
+    }
 }

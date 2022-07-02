@@ -35,14 +35,23 @@ public class UsersService : IUsersService
         return createdEntity.ToModel();
     }
 
-    public async Task<User> UpdateUser(int userId, User user)
+    public async Task<bool> UpdateUser(int userId, User user)
     {
-        UserEntity updatedEntity = await _usersRepository.UpdateUser(userId, user.ToEntity());
-        return updatedEntity.ToModel();
+        user.Id = userId;
+        return await _usersRepository.UpdateUser(userId, user.ToEntity());
     }
 
-    public async Task DeleteUser(int userId)
+    public async Task<bool> DeleteUser(int userId)
     {
-        await _usersRepository.DeleteUser(userId);
+        UserEntity? userToRemove = await _usersRepository.GetUser(userId);
+
+        if (userToRemove == null)
+        {
+            return false;
+        }
+
+        await _usersRepository.DeleteUser(userToRemove);
+
+        return true;
     }
 }

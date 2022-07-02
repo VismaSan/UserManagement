@@ -22,4 +22,10 @@ public class PostgreSqlContext : Microsoft.EntityFrameworkCore.DbContext
         ChangeTracker.DetectChanges();
         return base.SaveChanges();
     }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ChangeTracker.DetectChanges();
+        return base.SaveChangesAsync(cancellationToken);
+    }
 }

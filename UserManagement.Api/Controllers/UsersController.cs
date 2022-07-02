@@ -5,6 +5,10 @@ using UserManagement.Services.UsersService;
 namespace UserManagement.Api.Controllers;
 
 // TODO: versioning
+// TODO: readme file
+// TODO: exception handling
+// TODO: create users from list in file
+// TODO: edit user
 
 [ApiController]
 [Route("[controller]")]
@@ -37,6 +41,12 @@ public class UsersController : ControllerBase
         return Ok(await _usersService.CreateUser(user));
     }
 
+    // [HttpPost]
+    // public async Task<IActionResult> CreateUsersFromFile()
+    // {
+    //     return Ok();
+    // }
+
     [HttpPut]
     public async Task<IActionResult> UpdateUser(int userId, User user)
     {
@@ -46,7 +56,8 @@ public class UsersController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> DeleteUser(int userId)
     {
-        await _usersService.DeleteUser(userId);
-        return Ok();
+        bool removed = await _usersService.DeleteUser(userId);
+
+        return removed ? Ok() : BadRequest();
     }
 }

@@ -7,6 +7,6 @@ public interface IUsersService
     Task<IEnumerable<User>> GetUsers();
     Task<User?> GetUser(int id);
     Task<User> CreateUser(User user);
-    Task<User> UpdateUser(int userId, User user);
-    Task DeleteUser(int userId);
+    Task<bool> UpdateUser(int userId, User user);
+    Task<bool> DeleteUser(int userId);
 }

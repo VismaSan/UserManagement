@@ -26,6 +26,3 @@ COPY --from=publish /app/publish .
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS="http://*:5000"
 ENTRYPOINT ["dotnet", "UserManagement.Api.dll"]
-
-# docker-compose up --build
-# docker-compose down --volumes
