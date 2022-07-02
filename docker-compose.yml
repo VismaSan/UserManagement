@@ -1,0 +1,37 @@
+version: '3.4'
+
+networks:
+  user-management-api:
+    driver: bridge
+
+services:
+  user-management-api:
+    image: user-management-api:latest
+    depends_on:
+      - "postgres_image"
+    build:
+      context: .
+      dockerfile: Docerfile
+    ports:
+      - "8080:5000"
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=users_management_db;username=test;password=test"
+    networks:
+      - user-management-api
+
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
+    environment:
+      POSTGRES_USER: "test"
+      POSTGRES_PASSWORD: "test"
+      POSTGRES_DB: "users_management_db"
+    networks:
+      - user-management-api
+volume:
+  db_volume:

@@ -1,7 +1,12 @@
-﻿namespace UserManagement.Services.UsersService;
+﻿using UserManagement.Services.Models;
+
+namespace UserManagement.Services.UsersService;
 
 public interface IUsersService
 {
-    public Task<IEnumerable<int>> GetUsers();
-    public Task<int> GetUser(int id);
+    Task<IEnumerable<User>> GetUsers();
+    Task<User?> GetUser(int id);
+    Task<User> CreateUser(User user);
+    Task<User> UpdateUser(int userId, User user);
+    Task DeleteUser(int userId);
 }

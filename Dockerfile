@@ -6,11 +6,13 @@ ARG PROJECT=UserManagement
 COPY *.sln ./
 COPY ${PROJECT}.Api/*.csproj ./${PROJECT}.Api/
 COPY ${PROJECT}.Services/*.csproj ./${PROJECT}.Services/
+COPY ${PROJECT}.Repositories/*.csproj ./${PROJECT}.Repositories/
 RUN dotnet restore
 
 # Copy everything else and build
 COPY ${PROJECT}.Api/. ./${PROJECT}.Api/
 COPY ${PROJECT}.Services/. ./${PROJECT}.Services/
+COPY ${PROJECT}.Repositories/. ./${PROJECT}.Repositories/
 WORKDIR /src/${PROJECT}.Api
 RUN dotnet build -c Release -o /app/build
 
@@ -24,3 +26,6 @@ COPY --from=publish /app/publish .
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS="http://*:5000"
 ENTRYPOINT ["dotnet", "UserManagement.Api.dll"]
+
+# clear; docker build --no-cache -t user-management-api .
+# docker run --rm -d -p 8080:5000 --name user-management-container user-management-api
