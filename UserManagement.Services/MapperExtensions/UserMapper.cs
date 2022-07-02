@@ -9,9 +9,9 @@ public static class UserMapper
     {
         return new UserEntity
         {
-            Id = model.Id,
-            Username = model.Username,
-            Email = model.Email
+            id = model.Id,
+            username = model.Username,
+            email = model.Email
         };
     }
 
@@ -19,9 +19,9 @@ public static class UserMapper
     {
         return new User
         {
-            Id = entity.Id,
-            Username = entity.Username,
-            Email = entity.Email
+            Id = entity.id,
+            Username = entity.username,
+            Email = entity.email
         };
     }
 }

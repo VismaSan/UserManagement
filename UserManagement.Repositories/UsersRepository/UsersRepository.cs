@@ -1,27 +1,29 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using UserManagement.Repositories.DbContext;
 using UserManagement.Repositories.Entities;
 
 namespace UserManagement.Repositories.UsersRepository;
 
 public class UsersRepository : IUsersRepository
 {
+    private readonly PostgreSqlContext _dbContext;
     private readonly ILogger<UsersRepository> _logger;
 
-    public UsersRepository(ILogger<UsersRepository> logger)
+    public UsersRepository(PostgreSqlContext dbContext, ILogger<UsersRepository> logger)
     {
+        _dbContext = dbContext;
         _logger = logger;
     }
 
     public async Task<IEnumerable<UserEntity>> GetUsers()
     {
-        return await Task.FromResult(MockedUsers);
+        return await _dbContext.users.ToListAsync();
     }
 
     public async Task<UserEntity?> GetUser(int userId)
     {
-        UserEntity? result = MockedUsers.FirstOrDefault(user => user.Id == userId);
-
-        return await Task.FromResult(result);
+        return await _dbContext.users.Where(user => user.id == userId).FirstOrDefaultAsync();
     }
 
     public Task<UserEntity> CreateUser(UserEntity user)
@@ -43,15 +45,15 @@ public class UsersRepository : IUsersRepository
     {
         new()
         {
-            Id = 1,
-            Username = "User0",
-            Email = "Email0"
+            id = 1,
+            username = "User0",
+            email = "Email0"
         },
         new()
         {
-            Id = 10,
-            Username = "User10",
-            Email = "Email10"
+            id = 10,
+            username = "User10",
+            email = "Email10"
         }
     };
 }
