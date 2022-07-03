@@ -45,7 +45,7 @@ public class UsersController : ControllerBase
             return BadRequest("Only .csv file extensions are supported.");
         }
 
-        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), ".uploads");
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
         string filePath = Path.Combine(directoryPath, file.FileName);
 
         if (!Directory.Exists(directoryPath))
