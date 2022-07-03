@@ -47,6 +47,6 @@ public class UsersServiceTests
         _usersRepositoryMock.Verify(x => x.GetUsers(), Times.Once);
         _usersRepositoryMock.VerifyNoOtherCalls();
         ComparisonResult result = _compareLogic.Compare(expectedUsers, actualUsers);
-        Assert.IsFalse(result.AreEqual, result.DifferencesString);
+        Assert.IsTrue(result.AreEqual, result.DifferencesString);
     }
 }
