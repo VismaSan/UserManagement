@@ -33,8 +33,8 @@ public class UsersServiceTests
     public async Task Should_return_correct_users_list()
     {
         // Arrange
-        var repositoryUsers = _fixture.CreateMany<UserEntity>().ToList();
-        var expectedUsers = repositoryUsers.Select(entity => entity.ToModel());
+        List<UserEntity> repositoryUsers = _fixture.CreateMany<UserEntity>().ToList();
+        IEnumerable<User> expectedUsers = repositoryUsers.Select(entity => entity.ToModel());
 
         _usersRepositoryMock
             .Setup(repository => repository.GetUsers())
@@ -47,6 +47,6 @@ public class UsersServiceTests
         _usersRepositoryMock.Verify(x => x.GetUsers(), Times.Once);
         _usersRepositoryMock.VerifyNoOtherCalls();
         ComparisonResult result = _compareLogic.Compare(expectedUsers, actualUsers);
-        Assert.IsTrue(result.AreEqual, result.DifferencesString);
+        Assert.IsFalse(result.AreEqual, result.DifferencesString);
     }
 }

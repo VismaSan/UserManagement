@@ -7,14 +7,20 @@ COPY *.sln ./
 COPY ${PROJECT}.Api/*.csproj ./${PROJECT}.Api/
 COPY ${PROJECT}.Services/*.csproj ./${PROJECT}.Services/
 COPY ${PROJECT}.Repositories/*.csproj ./${PROJECT}.Repositories/
+COPY ${PROJECT}.ServicesTests/*.csproj ./${PROJECT}.ServicesTests/
 RUN dotnet restore
 
 # Copy everything else and build
 COPY ${PROJECT}.Api/. ./${PROJECT}.Api/
 COPY ${PROJECT}.Services/. ./${PROJECT}.Services/
 COPY ${PROJECT}.Repositories/. ./${PROJECT}.Repositories/
+COPY ${PROJECT}.ServicesTests/. ./${PROJECT}.ServicesTests/
 WORKDIR /src/${PROJECT}.Api
 RUN dotnet build -c Release -o /app/build
+
+FROM build AS test
+WORKDIR /src
+RUN dotnet test
 
 FROM build AS publish
 RUN dotnet publish -c Release -o /app/publish
