@@ -1,15 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using UserManagement.Repositories.DbContext;
+using UserManagement.Repositories.UsersRepository;
 using UserManagement.Services.UsersService;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddTransient<IUsersRepository, UsersRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+string? connectionStringValue = builder.Configuration
+                                       .GetSection("ConnectionStrings")
+                                       .GetSection("DB_CONNECTION_STRING")
+                                       .Value;
+
+string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? connectionStringValue ?? string.Empty;
+builder.Services.AddDbContext<PostgreSqlContext>(options => { options.UseNpgsql(connectionString); });
+
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
