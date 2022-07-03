@@ -3,7 +3,7 @@ using UserManagement.Repositories.DbContext;
 using UserManagement.Repositories.UsersRepository;
 using UserManagement.Services.UsersService;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddTransient<IUsersService, UsersService>();
@@ -20,7 +20,7 @@ string? connectionStringValue = builder.Configuration
 string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? connectionStringValue ?? string.Empty;
 builder.Services.AddDbContext<PostgreSqlContext>(options => { options.UseNpgsql(connectionString); });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
