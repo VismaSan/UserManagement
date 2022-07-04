@@ -19,17 +19,17 @@ public class UsersRepository : IUsersRepository
 
     public async Task<IEnumerable<UserEntity>> GetUsers()
     {
-        return await _dbContext.users.ToListAsync();
+        return await _dbContext.Users.ToListAsync();
     }
 
     public async Task<UserEntity?> GetUser(int userId)
     {
-        return await _dbContext.users.FindAsync(userId);
+        return await _dbContext.Users.FindAsync(userId);
     }
 
     public async Task<UserEntity> CreateUser(UserEntity user)
     {
-        EntityEntry<UserEntity> createdUser = await _dbContext.users.AddAsync(user);
+        EntityEntry<UserEntity> createdUser = await _dbContext.Users.AddAsync(user);
         await _dbContext.SaveChangesAsync();
 
         return createdUser.Entity;
@@ -40,7 +40,7 @@ public class UsersRepository : IUsersRepository
         List<UserEntity> result = new();
         foreach (UserEntity userEntity in users)
         {
-            EntityEntry<UserEntity> createdEntity = await _dbContext.users.AddAsync(userEntity);
+            EntityEntry<UserEntity> createdEntity = await _dbContext.Users.AddAsync(userEntity);
             result.Add(createdEntity.Entity);
         }
 
@@ -51,7 +51,7 @@ public class UsersRepository : IUsersRepository
 
     public async Task<bool> UpdateUser(int userId, UserEntity user)
     {
-        UserEntity? currentEntity = await _dbContext.users.FirstOrDefaultAsync(entity => entity.id == userId);
+        UserEntity? currentEntity = await _dbContext.Users.FirstOrDefaultAsync(entity => entity.Id == userId);
 
         if (currentEntity == null)
         {
@@ -66,7 +66,7 @@ public class UsersRepository : IUsersRepository
 
     public async Task DeleteUser(UserEntity user)
     {
-        _dbContext.users.Remove(user);
+        _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
     }
 }
